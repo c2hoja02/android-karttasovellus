@@ -1,0 +1,114 @@
+name: Weekly project meeting page
+
+on:
+  schedule:
+    - cron: "0 7 * * 5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create-meeting-page:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create dated page and pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          meeting_date="$(TZ=Europe/Helsinki date +'%Y-%m-%d')"
+          page_path="Projektipalaveri-${meeting_date}.md"
+          branch="automation/projektipalaveri-${meeting_date}"
+
+          git fetch origin main
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+            git fetch origin "$branch"
+            git switch --force-create "$branch" FETCH_HEAD
+          else
+            git switch --create "$branch" origin/main
+          fi
+
+          if git cat-file -e "origin/main:${page_path}" 2>/dev/null; then
+            echo "${page_path} already exists on main."
+            exit 0
+          fi
+
+          if [ ! -f "$page_path" ]; then
+            cat > "$page_path" <<EOF
+          # Projektipalaveri – ${meeting_date}
+
+          ## Palaverin tiedot
+
+          - **Päivämäärä:** ${meeting_date}
+          - **Aika:**
+          - **Osallistujat:**
+          - **Puheenjohtaja:**
+          - **Muistion laatija:**
+
+          ## Tavoite
+
+          Kirjaa palaverin tavoite tähän.
+
+          ## Esityslista
+
+          1. Edellisen palaverin tehtävien tilanne
+          2. Projektin eteneminen ja ajankohtaiset asiat
+          3. Keskustelua ja ratkaistavat kysymykset
+          4. Päätökset ja seuraavat tehtävät
+
+          ## Muistiinpanot
+
+          Lisää keskustelun keskeiset asiat tähän.
+
+          ## Päätökset
+
+          | Päätös | Perustelu | Päivämäärä |
+          |---|---|---|
+          |  |  |  |
+
+          ## Sovitut tehtävät
+
+          | Tehtävä | Vastuuhenkilö | Määräpäivä | Tila |
+          |---|---|---|---|
+          |  |  |  |  |
+
+          ## Avoimet kysymykset
+
+          - 
+
+          ## Seuraava palaveri
+
+          - **Ajankohta:**
+          - **Valmisteltavat asiat:**
+          EOF
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$page_path"
+          if git diff --cached --quiet; then
+            echo "No page changes to publish."
+            exit 0
+          fi
+          git commit -m "Add project meeting page for ${meeting_date}"
+          git push origin "$branch"
+
+          existing_pr="$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$branch" --state open --json number --jq '.[0].number // empty')"
+          if [ -z "$existing_pr" ]; then
+            gh pr create \
+              --repo "$GITHUB_REPOSITORY" \
+              --base main \
+              --head "$branch" \
+              --title "Projektipalaveri ${meeting_date}" \
+              --body "Automaattisesti luotu projektipalaverin sivupohja päivälle ${meeting_date}."
+          else
+            echo "Pull request #${existing_pr} already exists."
+          fi
