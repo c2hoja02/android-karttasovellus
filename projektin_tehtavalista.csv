@@ -1,0 +1,27 @@
+﻿Task ID;Category;Feature;Task;Description;Scope;Estimated Hours;Actual Hours;Assigned To;Status;Planned Week;Dependencies
+Y1;Project Management;Projektinhallinta;GitHub-repositorion pystytys;Luodaan Git-repo, asetetaan .gitignore ja luodaan Kanban-taulu.;Project;2;;;Not Started;1;
+Y2;Kehitysympäristö;Ympäristön pystytys;Kehitysympäristön alustus;Luodaan uusi Android Studio -projekti Jetpack Composella ja testataan emulaattorilla.;Project;4;;;Not Started;1;Y1
+Y3;Data Management;Karttadata;MML-karttadatan hankinta ja rajaus;Ladataan MML:n avoimesta rajapinnasta karttatiilit rajatulle testialueelle.;Project;8;;;Not Started;1;
+Y4;Research/Programming;Karttamoottori;Karttakirjaston evaluointi;Testataan kirjaston kykyä lukea offline-dataa ja sen istuvuutta Composeen.;Project;16;;;Not Started;1;Y2, Y3
+Y5;Project Management;Projektinhallinta;Viikkoraportointi ja sprinttihallinta;Dokumentoidaan edistyminen viikoittain ja pidetään Kanban-taulu ajan tasalla.;Project;12;;;Not Started;1;Y1
+Y6;Documentation;Dokumentointi;Loppudokumentaatio ja APK-julkaisu;Kirjoitetaan kurssin vaatima loppuraportti ja generoidaan asennettava APK-tiedosto.;Project;12;;;Not Started;8;Kaikki kooditehtävät
+MVP1;Programming;Karttamoottori;Karttakirjaston konfigurointi;Lisätään kirjastoriippuvuudet build.gradle-tiedostoon ja perusluvat Manifestiin.;MVP;3;;;Not Started;2;Y2
+MVP2;Data Management;Offline-kartta;Offline-karttatiilien integrointi;Sijoitetaan karttatiilit assets-kansioon ja ohjataan karttamoottori lukemaan niitä.;MVP;12;;;Not Started;3;Y3, MVP1
+MVP3;UX/UI;Karttanäkymä;Karttanäkymä UI Composella;Luodaan AndroidView-wrapperi karttakirjastolle osaksi Composen UI-rakennetta.;MVP;8;;;Not Started;3;MVP2
+MVP4;UX/UI;GPS-paikannus;Sijaintilupien hallinta UI:ssa;Toteutetaan logiikka, joka pyytää käyttäjältä ACCESS_FINE_LOCATION-lupaa.;MVP;5;;;Not Started;4;MVP3
+MVP5;Programming/Testing;GPS-paikannus;GPS-sijainnin sidonta kartalle;Hetaan laitteen koordinaatit LocationListenerillä ja sidotaan ne sijainti-ikoniin.;MVP;12;;;Not Started;4;MVP4
+MVP6;Programming;Tietokanta;Room-tietokannan arkkitehtuuri;Suunnitellaan ja koodataan Room-entiteetit ja DAO-rajapinnat.;MVP;8;;;Not Started;2;Y2
+MVP7;Programming;Marjapaikat;Pinnin pudotus kooditasolla;Koodataan karttanäkymään GestureListener ottamaan talteen pitkän painalluksen koordinaatit.;MVP;4;;;Not Started;4;MVP3
+MVP8;UX/UI;Marjapaikat;Tallennusdialogin UI;Luodaan Compose Dialog marjatyypin valinnalle ja tekstimuistiinpanoille.;MVP;6;;;Not Started;4;MVP7
+MVP9;Programming;Marjapaikat;Löydön vieminen tietokantaan;Yhdistetään dialogin tiedot Room-tietokannan insert-lauseeseen coroutineilla.;MVP;4;;;Not Started;5;MVP6, MVP8
+MVP10;Programming;Marjapaikat;Pinnien haku ja piirto käynnistyksessä;Hetaan tallennetut marjapaikat Roomista käynnistyksessä ja piirretään ne kartalle.;MVP;8;;;Not Started;5;MVP6, MVP9
+EXT1;UX/UI;Marjapaikat;Marjatyypin mukainen värikoodaus;Muutetaan pinnien kuvakkeiden värit tietokantaan tallennetun marjatyypin mukaan.;Extension;4;;;Not Started;3;MVP10
+EXT2;UX/UI;Historia;Tallennettujen paikkojen listanäkymä;Luodaan LazyColumn-listanäkymä, joka hakee ja listaa kaikki tietokannan marjapaikat.;Extension;8;;;Not Started;7;MVP6, MVP10
+EXT3;Programming;Historia;Paikkamerkinnän poistotoiminto;Lisätään historiaselaukseen painike, joka poistaa alkion Room-tietokannasta.;Extension;3;;;Not Started;7;EXT2
+EXT4;UX/UI;Reitit;Reitintallennuksen painikkeet UI:hin;Lisätään karttanäkymän päälle kelluvat painikkeet reitintallennuksen ohjaamiseen.;Extension;4;;;Not Started;6;MVP3
+EXT5;Programming;Reitit;Room-laajennus reittipisteille;Luodaan tietokantaan uusi taulu reittipisteiden koordinaattiketjuille.;Extension;6;;;Not Started;6;MVP6
+EXT6;Programming;Reitit;Android Foreground Service alustus;Koodataan taustapalvelu (Service), joka näyttää pakollisen pysyvän ilmoituksen yläpalkissa.;Extension;16;;;Not Started;6;EXT4
+EXT7;Programming;Reitit;Reitin GPS-pisteiden keruu taustalla;Liitetään LocationListener taustapalveluun tallentamaan koordinaatteja tietokantaan.;Extension;12;;;Not Started;7;EXT5, EXT6
+EXT8;Programming;Reitit;Reittiviivan (Polyline) live-piirto;Luodaan logiikka, joka piirtää aktiivisen reitin pisteet livenä Polyline-viivana kartalle.;Extension;8;;;Not Started;7;MVP5, EXT7
+EXT9;Programming;Reitit;Vanhojen reittien lataus kartalle;Ladataan historian reitit tietokannasta ja piirretään ne taustalle käynnistyksessä.;Extension;8;;;Not Started;8;EXT7, EXT8
+EXT10;Testing;Laatutakuu;Maastotestaaminen ja vakauden varmistus;Suoritetaan 15 minuutin käytännön kenttätesti ulkona lentotilassa, seurataan akkua ja GPS-tarkkuutta.;Extension;10;;;Not Started;8;MVP5, EXT7, EXT8
